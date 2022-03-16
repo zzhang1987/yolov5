@@ -254,6 +254,7 @@ def run(data,
         tp, fp, p, r, f1, ap, ap_class = ap_per_class(*stats, plot=plots, save_dir=save_dir, names=names)
         ap50, ap = ap[:, 0], ap.mean(1)  # AP@0.5, AP@0.5:0.95
         mp, mr, map50, map = p.mean(), r.mean(), ap50.mean(), ap.mean()
+        p_std, r_std, map_std, map_std = p.std(), r.std(), ap50.std(), ap.std()
         nt = np.bincount(stats[3].astype(np.int64), minlength=nc)  # number of targets per class
     else:
         nt = torch.zeros(1)
@@ -261,6 +262,7 @@ def run(data,
     # Print results
     pf = '%20s' + '%11i' * 2 + '%11.3g' * 4  # print format
     LOGGER.info(pf % ('all', seen, nt.sum(), mp, mr, map50, map))
+    LOGGER.info(pf % ('all', seen, nt.sum(), p_std, r_std, map_std, map_std))
 
     # Print results per class
     if (verbose or (nc < 50 and not training)) and nc > 1 and len(stats):
